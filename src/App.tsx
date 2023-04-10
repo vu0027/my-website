@@ -11,10 +11,10 @@ function App() {
     <Router>
       <div>
         <NavBar />
+        <Home/>
+        <About />
+        <Project/>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/projects" element={<Project />} />
           <Route path="/resume" element={<PDFViewer
             document={{
               url: process.env.PUBLIC_URL + "/pdf/AnhVu_Resume.pdf"

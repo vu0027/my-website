@@ -1,41 +1,28 @@
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 
 const Home = () => {
-	const BackgroundImage = styled.div`
-		background-image: url(${process.env.PUBLIC_URL}/images/background.jpg);
-		background-position: center;
-		background-size: cover;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: -1;
-		opacity: 0.6;
-	`;
 
   const HomeContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 50px;
-    height: 100%;
+    height: 100vh;
   `;
 
-  const ProfileContainer = styled.div`
-		margin-left: 50px;
-		margin-right: 50px;
-		width: 50%;
+  const ProfileContainer = styled.div<{ isSmallerScreen?: boolean} >`
+		z-index: 1;
+		margin: ${prop => prop.isSmallerScreen ? '25px': '70px'};
 
 		h1 {
-			font-size: 48px;
+			font-size: ${prop => prop.isSmallerScreen ? '25px' : '35px'};
 			font-weight: 800;
 			margin-bottom: 30px;
 			text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 		}
 
 		p {
-			font-size: 24px;
+			font-size: ${prop => prop.isSmallerScreen ? '15px' : '20px'};
 			margin-bottom: 20px;
 			line-height: 1.6;
 			color: #555;
@@ -72,43 +59,50 @@ const Home = () => {
 		}
   `;
 
-  const ProfileText = styled.div`
-    margin-top: 20px;
-    font-size: 18px;
-    line-height: 1.5;
-  `;
-
 	const ProfilePicture = styled.img`
-		height: "10%";
-		border-radius: 50%;
+		height: 20%;
 		animation: moveUpDown 2s ease-in-out infinite alternate;
 		animation: rotate 0.5s ease-in-out infinite alternate;
 
 		@keyframes rotate {
 			from {
-				transform: rotateZ(-1deg);
+				transform: rotateZ(-0.5deg);
 			}
 			to {
-				transform: rotateZ(1deg);
+				transform: rotateZ(0.5deg);
 			}
 		}
 	`;
 
+	const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 700);
+    };
+    handleResize(); // Check on initial render
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <HomeContainer id='home' className="home-container">
-      <BackgroundImage />
-      <ProfileContainer>
+			{isSmallScreen? '' : (
+
+      <ProfileContainer isSmallerScreen={isSmallScreen}>
 			<ProfilePicture
-          src={process.env.PUBLIC_URL + "/images/profile-photo.png"}
+          src={process.env.PUBLIC_URL + "/images/profile.png"}
           alt="Profile"
         />
       </ProfileContainer>
-      <ProfileContainer>
+					)
+				}
+      <ProfileContainer isSmallerScreen={isSmallScreen}>
+
         <h1>Welcome to My Portfolio</h1>
-        <p style={{ fontSize: "24px" }}>
+        <p>
           Here you can find examples of my work and learn more about me.
         </p>
-        <ProfileText>
           <p>
             My name is Anh Vu, and I am a Software Developer based in United
             States. I specialize in Front End Development, and I have 2 years of
@@ -120,7 +114,6 @@ const Home = () => {
             a potential project, please don't hesitate to{" "}
             <a href="https://www.linkedin.com/in/avu229/">contact me</a>.
           </p>
-        </ProfileText>
       </ProfileContainer>
     </HomeContainer>
   );
